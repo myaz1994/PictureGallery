@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -20,6 +21,9 @@ class GalleryState extends State<PictureGallery> {
   List<Album> listOfAlbums;
   Album cameraAlbum;
   List<Medium> pictures;
+
+  // Initiation of staggeredTiles variable used to store a list of tiles configurations:
+  List<StaggeredTile> staggeredTiles = [];
 
   // The method to execute at page launch:
   @override
@@ -77,6 +81,17 @@ class GalleryState extends State<PictureGallery> {
     });
   }
 
+  //The method to fill the staggeredTiles list:
+  void configureStaggeredView() async {
+    for (int i=0; i<pictures.length;i++){
+      if (i % 2 == 0) {
+        staggeredTiles.add(StaggeredTile.count(2, 2));
+      } else {
+        staggeredTiles.add(StaggeredTile.count(2, 1));
+      }
+    }
+  }
+
   /// The method that calls and executes the previous methods.
   /// This method is called in the initState method.
   /// The reason why the methods weren't directly called in the initState method is because "await" can't be used there.
@@ -86,44 +101,109 @@ class GalleryState extends State<PictureGallery> {
     await getAlbums();
     await retrieveCameraAlbum();
     await getPictures();
+    await configureStaggeredView();
   }
 
-  //Widget to show the gallery:
+  // Widget to show the gallery:
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
 
-      // Group all content in a scaffold:
+      // Group all content in a scaffold with a light blue background color:
       home: Scaffold(
+        backgroundColor: Colors.blue[100],
+        body: SafeArea(
+          child:Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
 
-        // Show an Appbar at the top of the screen:
-        appBar: AppBar(
-          title: Text("Picture Gallery"),
-        ),
+            // Page header to show page title "Picture Gallery" in a Container
+            Container(
+                height: 80,
 
-        //Show the pictures in a GridView (Staggered View will be configured later)
-        body: GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 1.0,
-          crossAxisSpacing: 1.0,
-          children: <Widget>[
-            ...?pictures?.map(
-                  (medium) => GestureDetector(
-                child: Container(
-                  color: Colors.grey[300],
-                  child: FadeInImage(
-                    fit: BoxFit.cover,
-                    placeholder: MemoryImage(kTransparentImage),
-                    image: ThumbnailProvider(
-                      mediumId: medium.id,
-                      mediumType: medium.mediumType,
-                      highQuality: true,
-                    ),
+                // Decorate the container box by defining circular borders and gradient blue colors:
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    stops: [0.1, 0.4, 0.7, 0.9],
+                    colors: [
+                      Colors.blue[300],
+                      Colors.blue[400],
+                      Colors.blue[500],
+                      Colors.blue[600],
+                    ],
                   ),
                 ),
+
+                // Show a text "Picture Gallery" at the center of the container:
+                child:Center(
+                  child:Text(
+                  'Picture Gallery',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ),
+              ),
+
+            Expanded(
+              child:Container(
+              padding: EdgeInsets.all(10),
+
+              // Show images in a Stagerred Grid View:
+              child: StaggeredGridView.count(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
+                staggeredTiles: staggeredTiles,
+                children: <Widget>[
+                  ...?pictures?.map(
+                        (medium) => GestureDetector(
+                      child: Container(
+
+                        // Show a decorated box with circular borders and gradient blue colors while loading pictures:
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18.0),
+                          gradient: LinearGradient(
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
+                            stops: [0.1, 0.4, 0.7, 0.9],
+                            colors: [
+                              Colors.blue[300],
+                              Colors.blue[400],
+                              Colors.blue[500],
+                              Colors.blue[600],
+                            ],
+                          ),
+                        ),
+
+                        // Show pictures after a fading effect while keeping the circular borders:
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18.0),
+                            child: FadeInImage (
+                            fit: BoxFit.cover,
+                            placeholder: MemoryImage(kTransparentImage),
+                            image: ThumbnailProvider(
+                              mediumId: medium.id,
+                              mediumType: medium.mediumType,
+                              highQuality: true,
+                            ),
+                            ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               ),
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
