@@ -21,6 +21,7 @@ Developed by: El Houssaine Myaz
 
 2. Download and upgrade needed packages:
 > flutter pub get
+
 > flutter pub upgrade
 
 
