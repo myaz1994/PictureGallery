@@ -13,8 +13,45 @@ Developed with: Flutter / Dart
 
 Developed by: El Houssaine Myaz
 
+## How to implement and test?
+
+1. In the desired directory, clone the repository:
+> git clone https://github.com/myaz1994/PictureGallery.git
+
+
+2. Download and upgrade needed packages:
+> flutter pub get
+> flutter pub upgrade
+
+
+3. Run the app on your mobile device:
+> flutter run
+
+
+4. When the app is launched, give the app the permission to access your photos:
+
+![Alt text](assets/images/screen1.jpg?raw=true "Access permission")
+
+
+5. Once the permissions are set, the gallery is shown in a staggered view (Screenshot blurred for privacy reasons):
+
+![Alt text](assets/images/screen2.jpg?raw=true "Gallery")
+
+
+6. After clicking on a picture, it appears in a Modal bottom sheet on the same page for a full image view:
+
+![Alt text](assets/images/screen3.jpg?raw=true "Image View")
+
+
 
 ## Change log
+
+> ## v0.0.4 (24/06/2021) 
+>
+> #### News:
+> 
+> - Minor changes.
+> - Updated README.md.
 
 > ## v0.0.3 (24/06/2021) 
 >

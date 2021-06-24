@@ -89,6 +89,7 @@ class GalleryState extends State<PictureGallery> {
   /// The reason why the methods weren't directly called in the initState method is because "await" can't be used there.
   /// "await" is necessary in order to execute the methods one after the other.
   /// "photo_gallery" plugin is used to retrieve albums and pictures.
+  /// "staggered grid view" plugin is used to show the pictures in a straggered view.
   void getData() async {
     await getAlbums();
     await retrieveCameraAlbum();
@@ -222,13 +223,13 @@ class GalleryState extends State<PictureGallery> {
                           style: ElevatedButton.styleFrom(
                               primary: Colors.white,
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
+                                  horizontal: 8, vertical: 8),
                               shape: StadiumBorder(),
                               textStyle: TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.bold)),
                           child: Icon(
                             Icons.close,
-                            color: Colors.black,
+                            color: Colors.red,
                             size: 25.0,
                           ),
                           onPressed: () {
